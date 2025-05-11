@@ -2282,7 +2282,7 @@ export const ReviewPage: React.FC = () => {
                   }}
                   className="w-full bg-indigo-600 text-white py-3 px-6 rounded-md font-medium text-lg shadow-md hover:shadow-lg hover:bg-indigo-700 transition-all"
                 >
-                  Create your account
+                  Send brief
                 </button>
               </div>
             </div>
@@ -2505,9 +2505,9 @@ export const PhoneVerificationPage: React.FC = () => {
                 // Save phone number to context
                 updateData({ phoneNumber: phone });
                 
-                // Set current step and navigate to confirmation page
+                // Set current step and navigate to dashboard
                 setCurrentStep(12);
-                navigate('/confirmation');
+                navigate('/dashboard');
               }
             }}
             className={`px-6 py-2.5 rounded-md text-sm font-medium transition-colors flex items-center ${isFormValid ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
