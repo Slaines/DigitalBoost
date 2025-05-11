@@ -1,4 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { db } from '../firebase/config';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { useAuth } from './AuthContext';
 
 // Define the structure of our onboarding data
 export interface OnboardingData {
@@ -55,6 +58,8 @@ const STORAGE_KEY = 'digitalboost_onboarding_data';
 const STEP_KEY = 'digitalboost_onboarding_step';
 
 export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { currentUser } = useAuth();
+  
   // Initialize state from localStorage if available
   const [data, setData] = useState<OnboardingData>(() => {
     const savedData = localStorage.getItem(STORAGE_KEY);
@@ -66,10 +71,46 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     return savedStep ? parseInt(savedStep, 10) : 1;
   });
   
-  // Save data to localStorage whenever it changes
+  // Load data from Firestore when user is authenticated
   useEffect(() => {
+    const loadUserData = async () => {
+      if (currentUser?.uid) {
+        try {
+          const userDocRef = doc(db, 'userData', currentUser.uid);
+          const userDoc = await getDoc(userDocRef);
+          
+          if (userDoc.exists()) {
+            const userData = userDoc.data() as OnboardingData;
+            setData(userData);
+          }
+        } catch (error) {
+          console.error('Error loading user data:', error);
+        }
+      }
+    };
+    
+    loadUserData();
+  }, [currentUser]);
+  
+  // Save data to localStorage and Firestore whenever it changes
+  useEffect(() => {
+    // Save to localStorage for non-authenticated users
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }, [data]);
+    
+    // Save to Firestore for authenticated users
+    const saveToFirestore = async () => {
+      if (currentUser?.uid && Object.keys(data).length > 0) {
+        try {
+          const userDocRef = doc(db, 'userData', currentUser.uid);
+          await setDoc(userDocRef, data, { merge: true });
+        } catch (error) {
+          console.error('Error saving user data to Firestore:', error);
+        }
+      }
+    };
+    
+    saveToFirestore();
+  }, [data, currentUser]);
   
   // Save current step to localStorage whenever it changes
   useEffect(() => {
@@ -90,6 +131,16 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setCurrentStep(1);
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(STEP_KEY);
+    
+    // Also clear from Firestore if user is authenticated
+    if (currentUser?.uid) {
+      try {
+        const userDocRef = doc(db, 'userData', currentUser.uid);
+        setDoc(userDocRef, {}, { merge: false });
+      } catch (error) {
+        console.error('Error resetting user data in Firestore:', error);
+      }
+    }
   };
   
   // Check if all required fields for a step are filled

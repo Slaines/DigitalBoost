@@ -21,7 +21,7 @@ const Dashboard: React.FC = () => {
   const { currentUser, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
-  const [activeSection, setActiveSection] = useState<string>('Dashboard');
+
 
   const handleLogout = async () => {
     try {
@@ -33,7 +33,8 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  // Mock data for the dashboard
+  // State for active section
+  const [activeSection, setActiveSection] = useState<string>('Dashboard');
 
   const projects = [
     {

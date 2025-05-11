@@ -2295,7 +2295,6 @@ export const ReviewPage: React.FC = () => {
 
 // Create a confirmation page component
 export const ConfirmationPage: React.FC = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const email = searchParams.get("email") || "";
