@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Download,
   Search,
@@ -8,26 +8,20 @@ import {
   X,
   Calendar,
   DollarSign,
-  FileText,
-  CreditCard
+  FileText
 } from 'lucide-react';
+import { useInvoices } from '../../api/hooks';
 
-interface Invoice {
-  id: string;
-  number: string;
-  date: string;
-  amount: number;
-  status: 'paid' | 'pending' | 'overdue';
-}
+// Using the Invoice interface from our API services
 
 const BillingSection: React.FC = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  
+  // Using TanStack Query to fetch invoices
+  const { data: invoices = [], isLoading, error } = useInvoices();
   
   // Format currency
   const formatCurrency = (amount: number) => {
@@ -206,37 +200,7 @@ const BillingSection: React.FC = () => {
     );
   }
   
-  // Fetch billing data
-  useEffect(() => {
-    const fetchBillingData = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        
-        // In a real app, this would fetch from Firestore
-        // For now, we'll use our mock data
-        const mockInvoices: Invoice[] = [
-          { id: '1', number: 'INV-2025-001', date: '2025-04-15', amount: 1500, status: 'paid' },
-          { id: '2', number: 'INV-2025-002', date: '2025-04-28', amount: 2200, status: 'paid' },
-          { id: '3', number: 'INV-2025-003', date: '2025-05-10', amount: 1800, status: 'pending' },
-          { id: '4', number: 'INV-2025-004', date: '2025-05-25', amount: 3000, status: 'pending' },
-          { id: '5', number: 'INV-2025-005', date: '2025-03-15', amount: 1200, status: 'overdue' },
-          { id: '6', number: 'INV-2025-006', date: '2025-02-28', amount: 2500, status: 'paid' },
-          { id: '7', number: 'INV-2025-007', date: '2025-01-15', amount: 1800, status: 'paid' },
-          { id: '8', number: 'INV-2025-008', date: '2025-03-05', amount: 3200, status: 'paid' },
-        ];
-        
-        setInvoices(mockInvoices);
-      } catch (err) {
-        console.error('Error fetching billing data:', err);
-        setError('Failed to load billing data. Please try again later.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    fetchBillingData();
-  }, []);
+  // No need for useEffect to fetch data - TanStack Query handles this
   
   // Loading state
   if (isLoading) {
@@ -245,7 +209,7 @@ const BillingSection: React.FC = () => {
   
   // Error state
   if (error) {
-    return <div className="p-6 text-center text-red-500">{error}</div>;
+    return <div className="p-6 text-center text-red-500">Failed to load billing data. Please try again later.</div>;
   }
   
   // Filter and search invoices

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import HelpSection from '../components/dashboard/HelpSection';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -9,25 +9,16 @@ import {
   HelpCircle,
   CreditCard,
   Search,
-  Bell,
   ChevronDown,
-  User,
-  Settings,
-  LogOut,
-  ChevronRight,
   Briefcase,
   DollarSign,
-  AlertCircle,
-  MessageSquare,
-  Clock,
-  Plus,
-  Calendar,
-  CheckCircle
-} from 'lucide-react';
+  Clock
+} from '../utils/icons';
 import MyDataSection from '../components/dashboard/MyDataSection';
 import DeliverablesSection from '../components/dashboard/DeliverablesSection';
 import ProjectTrackingSection from '../components/dashboard/ProjectTrackingSection';
 import BillingSection from '../components/dashboard/BillingSection';
+import { useClientData, useProjects } from '../api/hooks';
 
 interface DashboardProps {
   initialSection?: string;
@@ -38,17 +29,18 @@ const Dashboard: React.FC<DashboardProps> = ({ initialSection = 'Dashboard' }) =
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
   
-  // No longer using hasBookedCall state
-  
-  // Client-specific data that would normally come from an API
-  const [clientData, setClientData] = useState({
+  // Using TanStack Query to fetch client data
+  const { data: clientData = {
     activeProjectsCount: 0,
     pendingMilestonesCount: 0,
     hasOutstandingInvoice: false,
     outstandingInvoiceAmount: 0,
     outstandingInvoiceDueDays: 0,
-    nextMilestoneDate: null as Date | null
-  });
+    nextMilestoneDate: null
+  } } = useClientData();
+  
+  // Using TanStack Query to fetch projects data
+  const { data: fetchedProjects = [] } = useProjects();
 
 
   const handleLogout = async () => {
@@ -64,64 +56,11 @@ const Dashboard: React.FC<DashboardProps> = ({ initialSection = 'Dashboard' }) =
   // State for active section
   const [activeSection, setActiveSection] = useState<string>(initialSection);
 
-  // Updated projects data with service types, milestones, and progress stages
-  const projects = [
-    {
-      id: 1,
-      name: "Website Redesign",
-      type: "Web Development",
-      dueDate: new Date(2023, 5, 15),
-      progress: 67,
-      milestones: [
-        { name: "Design Approval", completed: true },
-        { name: "Development", completed: false },
-        { name: "Testing", completed: false }
-      ]
-    },
-    {
-      id: 2,
-      name: "Brand Refresh",
-      type: "Branding",
-      dueDate: new Date(2023, 4, 30),
-      progress: 25,
-      milestones: [
-        { name: "Discovery", completed: true },
-        { name: "Concept Development", completed: false },
-        { name: "Refinement", completed: false },
-        { name: "Final Delivery", completed: false }
-      ]
-    },
-    {
-      id: 3,
-      name: "SEO Optimization",
-      type: "Digital Marketing",
-      dueDate: new Date(2023, 6, 10),
-      progress: 40,
-      milestones: [
-        { name: "Audit", completed: true },
-        { name: "Strategy", completed: true },
-        { name: "Implementation", completed: false },
-        { name: "Reporting", completed: false }
-      ]
-    }
-  ];
+  // Use the fetched projects data
+  const projects = fetchedProjects;
 
+  // Get recent projects for the dashboard
   const recentProjects = projects.slice(0, 2);
-
-  // Set client data on mount - in a real app, this would come from an API
-  useEffect(() => {
-    // Simulate API call to get client data
-    setTimeout(() => {
-      setClientData({
-        activeProjectsCount: 3,
-        pendingMilestonesCount: 5,
-        hasOutstandingInvoice: true,
-        outstandingInvoiceAmount: 1500,
-        outstandingInvoiceDueDays: 7,
-        nextMilestoneDate: new Date(2025, 4, 19) // May 19, 2025
-      });
-    }, 500);
-  }, []);
   
   // Sidebar navigation items with personalized links
   const sidebarItems = [
@@ -409,70 +348,11 @@ const Dashboard: React.FC<DashboardProps> = ({ initialSection = 'Dashboard' }) =
             <>
               <h1 className="text-xl font-semibold mb-6">Project Tracking</h1>
               <ProjectTrackingSection 
-                projects={[
-                  {
-                    id: "1",
-                    name: "Website Redesign",
-                    milestones: [
-                      {
-                        id: "1-1",
-                        title: "Design Approval",
-                        status: "done",
-                        dueDate: "2025-04-15",
-                      },
-                      {
-                        id: "1-2",
-                        title: "Frontend Development",
-                        status: "inProgress",
-                        dueDate: "2025-05-20",
-                      },
-                      {
-                        id: "1-3",
-                        title: "Backend Integration",
-                        status: "pending",
-                        dueDate: "2025-06-10",
-                      }
-                    ]
-                  },
-                  {
-                    id: "2",
-                    name: "Mobile App Development",
-                    milestones: [
-                      {
-                        id: "2-1",
-                        title: "Wireframes",
-                        status: "done",
-                        dueDate: "2025-03-30",
-                      },
-                      {
-                        id: "2-2",
-                        title: "UI Design",
-                        status: "done",
-                        dueDate: "2025-04-20",
-                      },
-                      {
-                        id: "2-3",
-                        title: "Frontend Development",
-                        status: "inProgress",
-                        dueDate: "2025-05-25",
-                      },
-                      {
-                        id: "2-4",
-                        title: "Backend Integration",
-                        status: "pending",
-                        dueDate: "2025-06-15",
-                      },
-                      {
-                        id: "2-5",
-                        title: "Testing",
-                        status: "pending",
-                        dueDate: "2025-07-01",
-                      }
-                    ]
-                  }
-                ]}
                 canCreateProject={true}
-                onCreateProject={() => alert('Create project functionality would go here')}
+                onCreateProject={() => {
+                  console.log('Create new project');
+                  // In a real app, this would open a modal or navigate to a create project page
+                }}
               />
             </>
           )}

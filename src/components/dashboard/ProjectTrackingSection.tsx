@@ -1,43 +1,59 @@
 import React, { useState, useMemo } from 'react';
-import { 
-  Plus, 
-  Clock, 
-  ChevronDown, 
-  Filter, 
+import {
+  Plus,
+  Clock,
+  ChevronDown,
+  Filter,
   SortAsc,
   Pencil,
-  Eye
-} from 'lucide-react';
+  Eye,
+  Loader
+} from '../../utils/icons';
+import { useProjects } from '../../api/hooks';
 
-// Define interfaces
-interface Milestone {
-  id: string;
-  title: string;
-  status: "pending" | "inProgress" | "done";
-  dueDate: string; // ISO-8601
-}
-
-interface Project {
-  id: string;
-  name: string;
-  milestones: Milestone[];
-}
+// Import utility functions
+import { 
+  ProjectStatus,
+  SortOption,
+  getDaysRemaining,
+  getProjectStatus,
+  calculateProgress,
+  getNextMilestone,
+  filterAndSortProjects
+} from '../../utils/projects/projectUtils';
+import { getStatusBadgeStyle, formatDaysRemaining } from '../../utils/projects/uiUtils';
 
 interface Props {
-  projects: Project[]; // at least 1
   canCreateProject?: boolean; // default false
   onCreateProject?(): void; // "+New Project" click
 }
 
-// Project status types
-type ProjectStatus = 'Planning' | 'In Progress' | 'Completed' | 'All';
-type SortOption = 'Name A ▸ Z' | '% Complete' | 'Due Date';
-
 const ProjectTrackingSection: React.FC<Props> = ({
-  projects,
   canCreateProject = false,
   onCreateProject
 }) => {
+  // Using TanStack Query to fetch projects
+  const { data: projects = [], isLoading, error } = useProjects();
+  
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="max-w-6xl mx-auto p-6 flex flex-col items-center justify-center h-64">
+        <Loader className="animate-spin text-indigo-600 mb-4" size={32} />
+        <p className="text-gray-500">Loading projects...</p>
+      </div>
+    );
+  }
+  
+  // Show error state
+  if (error) {
+    return (
+      <div className="max-w-6xl mx-auto p-6 text-center">
+        <p className="text-red-500">Failed to load projects. Please try again later.</p>
+      </div>
+    );
+  }
+  
   // State for filtering and sorting
   const [statusFilter, setStatusFilter] = useState<ProjectStatus>('All');
   const [sortOption, setSortOption] = useState<SortOption>('Name A ▸ Z');
@@ -45,96 +61,9 @@ const ProjectTrackingSection: React.FC<Props> = ({
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   
 
-  // Calculate days remaining until due date
-  const getDaysRemaining = (dateString: string): number => {
-    const dueDate = new Date(dateString);
-    const today = new Date();
-    
-    // Reset time part for accurate day calculation
-    dueDate.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0);
-    
-    const diffTime = dueDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    return diffDays;
-  };
-
-  // Determine project status based on milestones
-  const getProjectStatus = (project: Project): ProjectStatus => {
-    const completedCount = project.milestones.filter(m => m.status === 'done').length;
-    
-    if (completedCount === project.milestones.length) {
-      return 'Completed';
-    } else if (project.milestones.some(m => m.status === 'inProgress')) {
-      return 'In Progress';
-    } else {
-      return 'Planning';
-    }
-  };
-
-  // Get status badge styling
-  const getStatusBadgeStyle = (status: ProjectStatus) => {
-    switch (status) {
-      case 'Completed':
-        return 'bg-green-100 text-green-800';
-      case 'In Progress':
-        return 'bg-blue-100 text-blue-800';
-      case 'Planning':
-        return 'bg-gray-100 text-gray-700';
-      default:
-        return 'bg-gray-100 text-gray-700';
-    }
-  };
-
-  // Calculate overall project progress percentage
-  const calculateProgress = (milestones: Milestone[]): number => {
-    if (milestones.length === 0) return 0;
-    
-    const completedCount = milestones.filter(m => m.status === 'done').length;
-    const inProgressCount = milestones.filter(m => m.status === 'inProgress').length;
-    
-    // Count in-progress milestones as half complete for progress calculation
-    return Math.round(((completedCount + (inProgressCount * 0.5)) / milestones.length) * 100);
-  };
-
-  // Get the next pending milestone for a project
-  const getNextMilestone = (project: Project) => {
-    const pendingMilestones = project.milestones
-      .filter(m => m.status !== 'done')
-      .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
-    
-    return pendingMilestones[0];
-  };
-
-  // Filter and sort projects
+  // Filter and sort projects using utility functions
   const filteredAndSortedProjects = useMemo(() => {
-    // First filter by status
-    let result = [...projects];
-    
-    if (statusFilter !== 'All') {
-      result = result.filter(project => getProjectStatus(project) === statusFilter);
-    }
-    
-    // Then sort
-    return result.sort((a, b) => {
-      switch (sortOption) {
-        case 'Name A ▸ Z':
-          return a.name.localeCompare(b.name);
-        case '% Complete':
-          return calculateProgress(b.milestones) - calculateProgress(a.milestones);
-        case 'Due Date':
-          const aNextMilestone = getNextMilestone(a);
-          const bNextMilestone = getNextMilestone(b);
-          
-          if (!aNextMilestone) return 1;
-          if (!bNextMilestone) return -1;
-          
-          return new Date(aNextMilestone.dueDate).getTime() - new Date(bNextMilestone.dueDate).getTime();
-        default:
-          return 0;
-      }
-    });
+    return filterAndSortProjects(projects, statusFilter, sortOption);
   }, [projects, statusFilter, sortOption]);
 
   return (
@@ -258,14 +187,13 @@ const ProjectTrackingSection: React.FC<Props> = ({
                       <Clock size={14} className="mr-1 text-indigo-500" />
                       <span>
                         Next: <span className="font-medium">{nextMilestone.title}</span>
-                        {getDaysRemaining(nextMilestone.dueDate) > 0 && (
+                        {getDaysRemaining(nextMilestone.dueDate) > 0 ? (
                           <span className="ml-1 text-gray-500">
-                            ({getDaysRemaining(nextMilestone.dueDate)} days left)
+                            ({formatDaysRemaining(getDaysRemaining(nextMilestone.dueDate))})
                           </span>
-                        )}
-                        {getDaysRemaining(nextMilestone.dueDate) <= 0 && (
+                        ) : (
                           <span className="ml-1 text-red-500 font-medium">
-                            (Overdue)
+                            ({formatDaysRemaining(getDaysRemaining(nextMilestone.dueDate))})
                           </span>
                         )}
                       </span>

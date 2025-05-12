@@ -11,13 +11,14 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.2",
+    "@tanstack/react-query": "^5.76.0",
     "firebase": "^11.7.1",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-firebase-hooks": "^5.1.1",
     "react-international-phone": "^4.5.0",
-    "react-router-dom": "^7.5.3"
+    "react-router-dom": "^6.22.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",

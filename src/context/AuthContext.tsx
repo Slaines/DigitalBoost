@@ -36,9 +36,24 @@ export const useAuth = () => {
   return context;
 };
 
+// Development mode flag - set to true to bypass authentication
+const DEV_MODE = true;
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  // In dev mode, create a mock user
+  const mockUser = DEV_MODE ? {
+    uid: 'dev-user-123',
+    email: 'dev@example.com',
+    displayName: 'Development User',
+    phoneNumber: '+1234567890',
+    emailVerified: true,
+    // Add other required User properties with dummy values
+    getIdToken: () => Promise.resolve('mock-token'),
+    toJSON: () => ({})
+  } as User : null;
+
+  const [currentUser, setCurrentUser] = useState<User | null>(mockUser);
+  const [loading, setLoading] = useState<boolean>(!DEV_MODE);
   const [error, setError] = useState<string | null>(null);
 
   // Clear any error messages
@@ -160,8 +175,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Subscribe to auth state changes
+  // Subscribe to auth state changes (only if not in dev mode)
   useEffect(() => {
+    if (DEV_MODE) {
+      // In dev mode, we're already set up with a mock user
+      return () => {};
+    }
+    
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       setLoading(false);
