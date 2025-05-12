@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Onboarding, { OnboardingStepTwo, OnboardingStepThree, OnboardingStepFour, OnboardingStepFive, OnboardingStepSix, OnboardingStepSeven, OnboardingStepEight, ProcessingPage, AccountCreationPage, PhoneVerificationPage, ReviewPage, ConfirmationPage } from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
@@ -39,6 +39,33 @@ function App() {
                 <Dashboard />
               </ProtectedRoute>
             } />
+            <Route path="/deliverables" element={
+              <ProtectedRoute>
+                <Dashboard initialSection="Deliverables" />
+              </ProtectedRoute>
+            } />
+            <Route path="/project-tracking" element={
+              <ProtectedRoute>
+                <Dashboard initialSection="Project Tracking" />
+              </ProtectedRoute>
+            } />
+            <Route path="/my-data" element={
+              <ProtectedRoute>
+                <Dashboard initialSection="My Data" />
+              </ProtectedRoute>
+            } />
+            <Route path="/billing" element={
+              <ProtectedRoute>
+                <Dashboard initialSection="Billing & Payments" />
+              </ProtectedRoute>
+            } />
+            <Route path="/help" element={
+              <ProtectedRoute>
+                <Dashboard initialSection="Help" />
+              </ProtectedRoute>
+            } />
+            {/* Redirect from misspelled route to correct dashboard route */}
+            <Route path="/dasheboard" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </OnboardingProvider>
       </AuthProvider>
