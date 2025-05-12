@@ -1,46 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { db } from '../firebase/config';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { getFirestore, connectFirestoreEmulator, doc, setDoc, getDoc } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-
-// Define the structure of our onboarding data
-export interface OnboardingData {
-  // Step 1: Service Selection
-  service?: string;
-  
-  // Step 2: Skills Selection
-  skills?: string[];
-  
-  // Step 3: Location
-  location?: string;
-  
-  // Step 4: Company Information
-  companyName?: string;
-  
-  // Step 5: Company Size
-  companySize?: string;
-  
-  // Step 6: Industry
-  industry?: string;
-  
-  // Step 7: Budget
-  budget?: {
-    type: string; // 'one-time' or 'monthly'
-    range: string; // format: 'minBudget-maxBudget'
-  };
-  
-  // Step 8: Project Details
-  projectContext?: string;
-  
-  // Step 10: Account Creation
-  // These fields are handled by AuthContext, but we include them here for completeness
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  
-  // Step 11: Phone Verification
-  phoneNumber?: string;
-}
+import app from '../firebase/config';
+import { OnboardingData, ONBOARDING_STEPS } from '../pages/onboarding/constants';
 
 interface OnboardingContextType {
   data: OnboardingData;
@@ -49,6 +12,10 @@ interface OnboardingContextType {
   currentStep: number;
   setCurrentStep: (step: number) => void;
   isDataComplete: (requiredFields: (keyof OnboardingData)[]) => boolean;
+  goToNextStep: () => void;
+  goToPrevStep: () => void;
+  validateCurrentStep: () => boolean;
+  getCurrentStepConfig: () => typeof ONBOARDING_STEPS[0] | undefined;
 }
 
 const OnboardingContext = createContext<OnboardingContextType | undefined>(undefined);
@@ -57,8 +24,24 @@ const OnboardingContext = createContext<OnboardingContextType | undefined>(undef
 const STORAGE_KEY = 'digitalboost_onboarding_data';
 const STEP_KEY = 'digitalboost_onboarding_step';
 
+// Initialize Firestore outside of component to avoid re-initialization on every render
+const db = getFirestore(app);
+
+// In Vite, environment variables are exposed via import.meta.env, not process.env
+// Only connect to emulator if explicitly enabled
+const isEmulatorEnabled = import.meta.env.VITE_USE_FIRESTORE_EMULATOR === 'true';
+if (isEmulatorEnabled) {
+  try {
+    connectFirestoreEmulator(db, 'localhost', 8080);
+    console.log('Connected to Firestore emulator');
+  } catch (error) {
+    console.warn('Failed to connect to Firestore emulator:', error);
+  }
+}
+
 export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
   
   // Initialize state from localStorage if available
   const [data, setData] = useState<OnboardingData>(() => {
@@ -162,6 +145,43 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       return value !== undefined && value !== '';
     });
   };
+
+  // Get the current step configuration
+  const getCurrentStepConfig = () => {
+    return ONBOARDING_STEPS.find(step => step.id === currentStep);
+  };
+  
+  // Validate if the current step is complete
+  const validateCurrentStep = () => {
+    const stepConfig = getCurrentStepConfig();
+    if (!stepConfig) return false;
+    
+    return isDataComplete(stepConfig.required);
+  };
+  
+  // Navigate to the next step
+  const goToNextStep = () => {
+    const stepConfig = getCurrentStepConfig();
+    if (!stepConfig) return;
+    
+    const nextStepConfig = ONBOARDING_STEPS.find(step => step.id === stepConfig.nextStep);
+    if (nextStepConfig) {
+      setCurrentStep(nextStepConfig.id);
+      navigate(nextStepConfig.path);
+    }
+  };
+  
+  // Navigate to the previous step
+  const goToPrevStep = () => {
+    const stepConfig = getCurrentStepConfig();
+    if (!stepConfig || stepConfig.prevStep === null) return;
+    
+    const prevStepConfig = ONBOARDING_STEPS.find(step => step.id === stepConfig.prevStep);
+    if (prevStepConfig) {
+      setCurrentStep(prevStepConfig.id);
+      navigate(prevStepConfig.path);
+    }
+  };
   
   const value = {
     data,
@@ -169,7 +189,11 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     resetData,
     currentStep,
     setCurrentStep,
-    isDataComplete
+    isDataComplete,
+    goToNextStep,
+    goToPrevStep,
+    validateCurrentStep,
+    getCurrentStepConfig
   };
   
   return (

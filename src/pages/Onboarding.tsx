@@ -89,13 +89,13 @@ export const OnboardingStepTwo: React.FC = () => {
     if (!data.service) {
       // If no service in context, redirect back to first step
       setCurrentStep(1);
-      navigate("/onboarding");
+      navigate("/onboarding/Step1");
     }
   }, [data.service, navigate, setCurrentStep]);
   
   const handleBack = () => {
     setCurrentStep(1);
-    navigate("/onboarding");
+    navigate("/onboarding/Step1");
   };
   
   const handleNext = () => {
@@ -106,7 +106,7 @@ export const OnboardingStepTwo: React.FC = () => {
     
     // Set current step and navigate to next step
     setCurrentStep(3);
-    navigate('/onboarding/step-three');
+    navigate('/onboarding/Step3');
   };
   
   const toggleSkill = (skill: string) => {
@@ -152,7 +152,7 @@ export const OnboardingStepTwo: React.FC = () => {
               <div className="inline-flex items-center bg-gray-100 rounded-md py-1.5 pl-3 pr-1 mr-2 mb-2">
                 <span className="text-gray-800 mr-1">{selectedService}</span>
                 <button 
-                  onClick={() => navigate("/onboarding")} 
+                  onClick={() => navigate("/onboarding/Step1")} 
                   className="p-1 rounded-full hover:bg-gray-200"
                 >
                   <XCircleIcon size={16} className="text-gray-500" />
@@ -229,7 +229,7 @@ const Onboarding: React.FC = () => {
       
       // Set current step and navigate to next step
       setCurrentStep(2);
-      navigate("/onboarding/step-two");
+      navigate("/onboarding/Step2");
     }
   };
 
@@ -363,10 +363,10 @@ export const OnboardingStepThree: React.FC = () => {
       // If missing required data in context, redirect back to appropriate step
       if (!data.service) {
         setCurrentStep(1);
-        navigate("/onboarding");
+        navigate("/onboarding/Step1");
       } else if (!data.skills) {
         setCurrentStep(2);
-        navigate("/onboarding/step-two");
+        navigate("/onboarding/Step2");
       }
     }
   }, [data, navigate, setCurrentStep]);
@@ -381,7 +381,7 @@ export const OnboardingStepThree: React.FC = () => {
   const handleBack = () => {
     // Navigate back to step two
     setCurrentStep(2);
-    navigate("/onboarding/step-two");
+    navigate("/onboarding/Step2");
   };
   
   const handleNext = () => {
@@ -389,7 +389,7 @@ export const OnboardingStepThree: React.FC = () => {
       // Save to context instead of URL
       updateData({ location: locationInput });
       setCurrentStep(4);
-      navigate("/onboarding/step-four");
+      navigate("/onboarding/Step4");
     }
   };
   
@@ -468,13 +468,13 @@ export const OnboardingStepFour: React.FC = () => {
       // If missing required data in context, redirect back to appropriate step
       if (!data.service) {
         setCurrentStep(1);
-        navigate("/onboarding");
+        navigate("/onboarding/Step1");
       } else if (!data.skills) {
         setCurrentStep(2);
-        navigate("/onboarding/step-two");
+        navigate("/onboarding/Step2");
       } else if (!data.location) {
         setCurrentStep(3);
-        navigate("/onboarding/step-three");
+        navigate("/onboarding/Step3");
       }
     }
   }, [data, navigate, setCurrentStep]);
@@ -482,7 +482,7 @@ export const OnboardingStepFour: React.FC = () => {
   const handleBack = () => {
     // Navigate back to step three
     setCurrentStep(3);
-    navigate("/onboarding/step-three");
+    navigate("/onboarding/Step3");
   };
   
   const handleNext = () => {
@@ -492,7 +492,7 @@ export const OnboardingStepFour: React.FC = () => {
       
       // Set current step and navigate to next step
       setCurrentStep(5);
-      navigate("/onboarding/step-five");
+      navigate("/onboarding/Step5");
     }
   };
   
@@ -602,16 +602,16 @@ export const OnboardingStepFive: React.FC = () => {
       // If missing required data in context, redirect back to appropriate step
       if (!data.service) {
         setCurrentStep(1);
-        navigate("/onboarding");
+        navigate("/onboarding/Step1");
       } else if (!data.skills) {
         setCurrentStep(2);
-        navigate("/onboarding/step-two");
+        navigate("/onboarding/Step2");
       } else if (!data.location) {
         setCurrentStep(3);
-        navigate("/onboarding/step-three");
+        navigate("/onboarding/Step3");
       } else if (!data.companyName) {
         setCurrentStep(4);
-        navigate("/onboarding/step-four");
+        navigate("/onboarding/Step4");
       }
     }
   }, [data, navigate, setCurrentStep]);
@@ -619,7 +619,7 @@ export const OnboardingStepFive: React.FC = () => {
   const handleBack = () => {
     // Navigate back to step four
     setCurrentStep(4);
-    navigate("/onboarding/step-four");
+    navigate("/onboarding/Step4");
   };
   
   const handleNext = () => {
@@ -629,7 +629,7 @@ export const OnboardingStepFive: React.FC = () => {
       
       // Set current step and navigate to next step
       setCurrentStep(6);
-      navigate("/onboarding/step-six");
+      navigate("/onboarding/Step6");
     }
   };
   
@@ -778,19 +778,19 @@ export const OnboardingStepSix: React.FC = () => {
       // If missing required data in context, redirect back to appropriate step
       if (!data.service) {
         setCurrentStep(1);
-        navigate("/onboarding");
+        navigate("/onboarding/Step1");
       } else if (!data.skills) {
         setCurrentStep(2);
-        navigate("/onboarding/step-two");
+        navigate("/onboarding/Step2");
       } else if (!data.location) {
         setCurrentStep(3);
-        navigate("/onboarding/step-three");
+        navigate("/onboarding/Step3");
       } else if (!data.companyName) {
         setCurrentStep(4);
-        navigate("/onboarding/step-four");
+        navigate("/onboarding/Step4");
       } else if (!data.companySize) {
         setCurrentStep(5);
-        navigate("/onboarding/step-five");
+        navigate("/onboarding/Step5");
       }
     }
   }, [data, navigate, setCurrentStep]);
@@ -798,7 +798,7 @@ export const OnboardingStepSix: React.FC = () => {
   const handleBack = () => {
     // Navigate back to step five
     setCurrentStep(5);
-    navigate("/onboarding/step-five");
+    navigate("/onboarding/Step5");
   };
   
   const handleNext = () => {
@@ -808,7 +808,7 @@ export const OnboardingStepSix: React.FC = () => {
       
       // Set current step and navigate to next step
       setCurrentStep(7);
-      navigate("/onboarding/step-seven");
+      navigate("/onboarding/Step7");
     }
   };
   
@@ -912,22 +912,22 @@ export const OnboardingStepSeven: React.FC = () => {
       // If missing required data in context, redirect back to appropriate step
       if (!data.service) {
         setCurrentStep(1);
-        navigate("/onboarding");
+        navigate("/onboarding/Step1");
       } else if (!data.skills) {
         setCurrentStep(2);
-        navigate("/onboarding/step-two");
+        navigate("/onboarding/Step2");
       } else if (!data.location) {
         setCurrentStep(3);
-        navigate("/onboarding/step-three");
+        navigate("/onboarding/Step3");
       } else if (!data.companyName) {
         setCurrentStep(4);
-        navigate("/onboarding/step-four");
+        navigate("/onboarding/Step4");
       } else if (!data.companySize) {
         setCurrentStep(5);
-        navigate("/onboarding/step-five");
+        navigate("/onboarding/Step5");
       } else if (!data.industry) {
         setCurrentStep(6);
-        navigate("/onboarding/step-six");
+        navigate("/onboarding/Step6");
       }
     }
   }, [data, navigate, setCurrentStep]);
@@ -935,7 +935,7 @@ export const OnboardingStepSeven: React.FC = () => {
   const handleBack = () => {
     // Navigate back to step six
     setCurrentStep(6);
-    navigate("/onboarding/step-six");
+    navigate("/onboarding/Step6");
   };
   
   const handleNext = () => {
@@ -959,7 +959,7 @@ export const OnboardingStepSeven: React.FC = () => {
     
     // Set current step and navigate to next step
     setCurrentStep(8);
-    navigate("/onboarding/step-eight");
+    navigate("/onboarding/Step8");
   };
   
   return (
@@ -1118,25 +1118,25 @@ export const OnboardingStepEight: React.FC = () => {
       // If missing required data in context, redirect back to appropriate step
       if (!data.service) {
         setCurrentStep(1);
-        navigate("/onboarding");
+        navigate("/onboarding/Step1");
       } else if (!data.skills) {
         setCurrentStep(2);
-        navigate("/onboarding/step-two");
+        navigate("/onboarding/Step2");
       } else if (!data.location) {
         setCurrentStep(3);
-        navigate("/onboarding/step-three");
+        navigate("/onboarding/Step3");
       } else if (!data.companyName) {
         setCurrentStep(4);
-        navigate("/onboarding/step-four");
+        navigate("/onboarding/Step4");
       } else if (!data.companySize) {
         setCurrentStep(5);
-        navigate("/onboarding/step-five");
+        navigate("/onboarding/Step5");
       } else if (!data.industry) {
         setCurrentStep(6);
-        navigate("/onboarding/step-six");
+        navigate("/onboarding/Step6");
       } else if (!data.budget) {
         setCurrentStep(7);
-        navigate("/onboarding/step-seven");
+        navigate("/onboarding/Step7");
       }
     }
   }, [data, navigate, setCurrentStep]);
@@ -1144,7 +1144,7 @@ export const OnboardingStepEight: React.FC = () => {
   const handleBack = () => {
     // Navigate back to step seven
     setCurrentStep(7);
-    navigate("/onboarding/step-seven");
+    navigate("/onboarding/Step7");
   };
   
   const handleNext = () => {
@@ -1236,28 +1236,28 @@ export const ProcessingPage: React.FC = () => {
       // If missing required data in context, redirect back to appropriate step
       if (!data.service) {
         setCurrentStep(1);
-        navigate("/onboarding");
+        navigate("/onboarding/Step1");
       } else if (!data.skills) {
         setCurrentStep(2);
-        navigate("/onboarding/step-two");
+        navigate("/onboarding/Step2");
       } else if (!data.location) {
         setCurrentStep(3);
-        navigate("/onboarding/step-three");
+        navigate("/onboarding/Step3");
       } else if (!data.companyName) {
         setCurrentStep(4);
-        navigate("/onboarding/step-four");
+        navigate("/onboarding/Step4");
       } else if (!data.companySize) {
         setCurrentStep(5);
-        navigate("/onboarding/step-five");
+        navigate("/onboarding/Step5");
       } else if (!data.industry) {
         setCurrentStep(6);
-        navigate("/onboarding/step-six");
+        navigate("/onboarding/Step6");
       } else if (!data.budget) {
         setCurrentStep(7);
-        navigate("/onboarding/step-seven");
+        navigate("/onboarding/Step7");
       } else if (!data.projectContext) {
         setCurrentStep(8);
-        navigate("/onboarding/step-eight");
+        navigate("/onboarding/Step8");
       }
       return;
     }
@@ -1735,25 +1735,25 @@ export const ReviewPage: React.FC = () => {
         navigate('/onboarding');
         break;
       case 2:
-        navigate('/onboarding/step-two');
+        navigate('/onboarding/Step2');
         break;
       case 3:
-        navigate('/onboarding/step-three');
+        navigate('/onboarding/Step3');
         break;
       case 4:
-        navigate('/onboarding/step-four');
+        navigate('/onboarding/Step4');
         break;
       case 5:
-        navigate('/onboarding/step-five');
+        navigate('/onboarding/Step5');
         break;
       case 6:
-        navigate('/onboarding/step-six');
+        navigate('/onboarding/Step6');
         break;
       case 7:
-        navigate('/onboarding/step-seven');
+        navigate('/onboarding/Step7');
         break;
       case 8:
-        navigate('/onboarding/step-eight');
+        navigate('/onboarding/Step8');
         break;
       default:
         navigate('/onboarding');

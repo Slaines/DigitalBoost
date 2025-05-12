@@ -35,7 +35,18 @@ const ProjectTrackingSection: React.FC<Props> = ({
   // Using TanStack Query to fetch projects
   const { data: projects = [], isLoading, error } = useProjects();
   
-  // Show loading state
+  // State for filtering and sorting - moved to top level before any conditional returns
+  const [statusFilter, setStatusFilter] = useState<ProjectStatus>('All');
+  const [sortOption, setSortOption] = useState<SortOption>('Name A ▸ Z');
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
+  
+  // Filter and sort projects using utility functions
+  const filteredAndSortedProjects = useMemo(() => {
+    return filterAndSortProjects(projects, statusFilter, sortOption);
+  }, [projects, statusFilter, sortOption]);
+  
+  // Show loading state - moved after all hooks
   if (isLoading) {
     return (
       <div className="max-w-6xl mx-auto p-6 flex flex-col items-center justify-center h-64">
@@ -45,7 +56,7 @@ const ProjectTrackingSection: React.FC<Props> = ({
     );
   }
   
-  // Show error state
+  // Show error state - moved after all hooks
   if (error) {
     return (
       <div className="max-w-6xl mx-auto p-6 text-center">
@@ -53,18 +64,6 @@ const ProjectTrackingSection: React.FC<Props> = ({
       </div>
     );
   }
-  
-  // State for filtering and sorting
-  const [statusFilter, setStatusFilter] = useState<ProjectStatus>('All');
-  const [sortOption, setSortOption] = useState<SortOption>('Name A ▸ Z');
-  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
-  const [showSortDropdown, setShowSortDropdown] = useState(false);
-  
-
-  // Filter and sort projects using utility functions
-  const filteredAndSortedProjects = useMemo(() => {
-    return filterAndSortProjects(projects, statusFilter, sortOption);
-  }, [projects, statusFilter, sortOption]);
 
   return (
     <div>

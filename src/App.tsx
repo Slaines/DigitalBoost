@@ -3,7 +3,20 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './api/client';
 import Home from "./pages/Home";
-import Onboarding, { OnboardingStepTwo, OnboardingStepThree, OnboardingStepFour, OnboardingStepFive, OnboardingStepSix, OnboardingStepSeven, OnboardingStepEight, ProcessingPage, AccountCreationPage, PhoneVerificationPage, ReviewPage, ConfirmationPage } from "./pages/Onboarding";
+// Import onboarding components
+import Onboarding from "./pages/Onboarding";
+import OnboardingIndex from "./pages/onboarding/index";
+import Step1 from "./pages/onboarding/Step1";
+import Step2 from "./pages/onboarding/Step2";
+import Step3 from "./pages/onboarding/Step3";
+import Step4 from "./pages/onboarding/Step4";
+import Step5 from "./pages/onboarding/Step5";
+import Step6 from "./pages/onboarding/Step6";
+import Step7 from "./pages/onboarding/Step7";
+import Step8 from "./pages/onboarding/Step8";
+import ReviewPage from "./pages/onboarding/Review";
+import AccountCreationPage from "./pages/onboarding/AccountCreation";
+import { ProcessingPage, PhoneVerificationPage, ConfirmationPage } from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -74,44 +87,58 @@ function App() {
                 {/* Onboarding routes with error boundaries */}
                 <Route path="/onboarding" element={
                   <ErrorBoundary onError={logError}>
-                    <Onboarding />
+                    <OnboardingIndex />
                   </ErrorBoundary>
                 } />
-                <Route path="/onboarding/step-two" element={
+                {/* New URL format */}
+                <Route path="/onboarding/Step1" element={
                   <ErrorBoundary onError={logError}>
-                    <OnboardingStepTwo />
+                    <Step1 />
                   </ErrorBoundary>
                 } />
-                <Route path="/onboarding/step-three" element={
+                <Route path="/onboarding/Step2" element={
                   <ErrorBoundary onError={logError}>
-                    <OnboardingStepThree />
+                    <Step2 />
                   </ErrorBoundary>
                 } />
-                <Route path="/onboarding/step-four" element={
+                <Route path="/onboarding/Step3" element={
                   <ErrorBoundary onError={logError}>
-                    <OnboardingStepFour />
+                    <Step3 />
                   </ErrorBoundary>
                 } />
-                <Route path="/onboarding/step-five" element={
+                <Route path="/onboarding/Step4" element={
                   <ErrorBoundary onError={logError}>
-                    <OnboardingStepFive />
+                    <Step4 />
                   </ErrorBoundary>
                 } />
-                <Route path="/onboarding/step-six" element={
+                <Route path="/onboarding/Step5" element={
                   <ErrorBoundary onError={logError}>
-                    <OnboardingStepSix />
+                    <Step5 />
                   </ErrorBoundary>
                 } />
-                <Route path="/onboarding/step-seven" element={
+                <Route path="/onboarding/Step6" element={
                   <ErrorBoundary onError={logError}>
-                    <OnboardingStepSeven />
+                    <Step6 />
                   </ErrorBoundary>
                 } />
-                <Route path="/onboarding/step-eight" element={
+                <Route path="/onboarding/Step7" element={
                   <ErrorBoundary onError={logError}>
-                    <OnboardingStepEight />
+                    <Step7 />
                   </ErrorBoundary>
                 } />
+                <Route path="/onboarding/Step8" element={
+                  <ErrorBoundary onError={logError}>
+                    <Step8 />
+                  </ErrorBoundary>
+                } />
+                {/* Keep the old routes for backward compatibility */}
+                <Route path="/onboarding/step-two" element={<Navigate to="/onboarding/Step2" replace />} />
+                <Route path="/onboarding/step-three" element={<Navigate to="/onboarding/Step3" replace />} />
+                <Route path="/onboarding/step-four" element={<Navigate to="/onboarding/Step4" replace />} />
+                <Route path="/onboarding/step-five" element={<Navigate to="/onboarding/Step5" replace />} />
+                <Route path="/onboarding/step-six" element={<Navigate to="/onboarding/Step6" replace />} />
+                <Route path="/onboarding/step-seven" element={<Navigate to="/onboarding/Step7" replace />} />
+                <Route path="/onboarding/step-eight" element={<Navigate to="/onboarding/Step8" replace />} />
                 <Route path="/onboarding/processing" element={
                   <ErrorBoundary onError={logError}>
                     <ProcessingPage />
