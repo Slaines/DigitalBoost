@@ -112,28 +112,32 @@ const OnboardingStep5: React.FC = () => {
                   </div>
 
                   {/* Custom range slider with circular handles */}
-                  <input 
-                    type="range" 
-                    min="1" 
-                    max="7" 
-                    step="1"
-                    value={companySizeOptions.find(opt => opt.id === selectedSize)?.value || 1}
-                    onChange={(e) => {
-                      const value = parseInt(e.target.value);
-                      const option = companySizeOptions.find(opt => opt.value === value);
-                      if (option) setSelectedSize(option.id);
-                    }}
-                    className="
-                      appearance-none w-full h-2 rounded-lg bg-indigo-100 outline-none
-                      cursor-pointer custom-range-slider focus:outline-none focus:ring-2 focus:ring-indigo-500
-                    "
-                    style={{
-                      WebkitAppearance: 'none',
-                    }}
-                  />
+                  <div className="relative">
+                    <input 
+                      type="range" 
+                      min="1" 
+                      max="7" 
+                      step="1"
+                      value={companySizeOptions.find(opt => opt.id === selectedSize)?.value || 1}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value);
+                        const option = companySizeOptions.find(opt => opt.value === value);
+                        if (option) setSelectedSize(option.id);
+                      }}
+                      className="
+                        appearance-none w-full h-2 rounded-lg bg-indigo-100 outline-none
+                        cursor-pointer custom-range-slider focus:outline-none focus:ring-2 focus:ring-indigo-500
+                      "
+                      style={{
+                        WebkitAppearance: 'none',
+                        margin: '14px 0', // Add margin to center the thumb with the track
+                      }}
+                    />
+                  </div>
                   
                   {/* Style for the custom range slider */}
-                  <style jsx>{`
+                  <style>
+                    {`
                     .custom-range-slider::-webkit-slider-thumb {
                       -webkit-appearance: none;
                       appearance: none;
@@ -144,6 +148,7 @@ const OnboardingStep5: React.FC = () => {
                       border: 2px solid #6366f1;
                       box-shadow: 0 1px 3px rgba(0,0,0,0.2);
                       cursor: pointer;
+                      margin-top: -14px; /* Center the thumb vertically */
                     }
                     .custom-range-slider::-moz-range-thumb {
                       width: 28px;
@@ -154,19 +159,39 @@ const OnboardingStep5: React.FC = () => {
                       box-shadow: 0 1px 3px rgba(0,0,0,0.2);
                       cursor: pointer;
                     }
-                  `}</style>
+                    /* Ensure the track is properly sized */
+                    .custom-range-slider::-webkit-slider-runnable-track {
+                      height: 2px;
+                      border-radius: 1px;
+                    }
+                    .custom-range-slider::-moz-range-track {
+                      height: 2px;
+                      border-radius: 1px;
+                    }
+                    `}
+                  </style>
                   
                   {/* Size labels beneath the slider */}
-                  <div className="flex justify-between mt-3 px-1 text-xs text-gray-600">
-                    {companySizeOptions.map((option) => (
-                      <div 
-                        key={option.id} 
-                        className={`cursor-pointer transition-all duration-200 ${selectedSize === option.id ? 'text-indigo-600 font-medium' : ''}`}
-                        onClick={() => setSelectedSize(option.id)}
-                      >
-                        {option.id}
+                  <div className="flex justify-between mt-3 text-xs text-gray-600 relative">
+                    {/* This container ensures the labels are positioned correctly */}
+                    <div className="absolute w-full" style={{ paddingLeft: '14px', paddingRight: '14px' }}>
+                      <div className="flex justify-between w-full">
+                        {companySizeOptions.map((option) => (
+                          <div 
+                            key={option.id} 
+                            className={`cursor-pointer transition-all duration-200 ${selectedSize === option.id ? 'text-indigo-600 font-medium' : ''}`}
+                            onClick={() => setSelectedSize(option.id)}
+                            style={{ 
+                              transform: 'translateX(-50%)', /* Center each label under its slider position */
+                              width: '28px',
+                              textAlign: 'center'
+                            }}
+                          >
+                            {option.id}
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
                   </div>
                 </div>
                 

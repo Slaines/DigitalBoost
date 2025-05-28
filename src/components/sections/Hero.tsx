@@ -25,11 +25,17 @@ const Hero: React.FC = () => {
             <div className="mt-8 flex items-center text-gray-500">
               <span className="inline-flex items-center justify-center">
                 <span className="flex -space-x-2">
-                  {[...Array(4)].map((_, i) => (
+                  {/* Use reliable image URLs instead of dynamically generated ones */}
+                  {[
+                    "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg",
+                    "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg",
+                    "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg",
+                    "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg"
+                  ].map((imgSrc, i) => (
                     <img
                       key={i}
                       className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
-                      src={`https://images.pexels.com/photos/${1127000 + i * 50}/pexels-photo-${1127000 + i * 50}.jpeg?auto=compress&cs=tinysrgb&w=100`}
+                      src={`${imgSrc}?auto=compress&cs=tinysrgb&w=100`}
                       alt="Customer"
                     />
                   ))}

@@ -116,9 +116,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(true);
       clearError();
       const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      return result;
+      // Add scopes for better user experience
+      provider.addScope('profile');
+      provider.addScope('email');
+      // Set custom parameters for a better UX
+      provider.setCustomParameters({
+        prompt: 'select_account'
+      });
+      
+      // First try with popup
+      try {
+        const result = await signInWithPopup(auth, provider);
+        return result;
+      } catch (popupError: any) {
+        console.error('Error signing in with Google:', JSON.stringify(popupError));
+        
+        // If popup is blocked, we could use redirect method instead
+        // But for this demo, we'll just show a more helpful error message
+        if (popupError.code === 'auth/popup-blocked') {
+          setError('Popup was blocked. Please allow popups for this site or try again.');
+        } else {
+          setError(`Failed to sign in with Google: ${popupError.message}`);
+        }
+        throw popupError;
+      }
     } catch (err: any) {
+      console.error('Error in signInWithGoogle:', JSON.stringify(err));
       setError('Failed to sign in with Google');
       throw err;
     } finally {

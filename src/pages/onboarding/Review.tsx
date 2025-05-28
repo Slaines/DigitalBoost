@@ -242,7 +242,7 @@ const ReviewPage: React.FC = () => {
               <div>
                 <h4 className="text-sm font-medium text-brand-700">Next Steps</h4>
                 <p className="text-sm text-brand-600">
-                  After confirming your information, you'll create your account to access your personalized dashboard and connect with service providers.
+                  After confirming your information, you'll create your account to access your personalized dashboard.
                 </p>
               </div>
             </div>

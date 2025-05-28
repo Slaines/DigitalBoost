@@ -22,9 +22,8 @@ const OnboardingStep4: React.FC = () => {
     } else if (!data.location) {
       setCurrentStep(3);
       navigate("/onboarding/Step3");
-    } else {
-      setError('Please enter your company name');
     }
+    // Removed the automatic error setting that was causing the validation error to appear immediately
   }, [data, navigate, setCurrentStep]);
 
   const handleBack = () => {

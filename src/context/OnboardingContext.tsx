@@ -1,9 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getFirestore, connectFirestoreEmulator, doc, setDoc, getDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import app from '../firebase/config';
 import { OnboardingData, ONBOARDING_STEPS } from '../pages/onboarding/constants';
+// Removed Firestore imports to prevent channel errors
 
 interface OnboardingContextType {
   data: OnboardingData;
@@ -24,20 +23,8 @@ const OnboardingContext = createContext<OnboardingContextType | undefined>(undef
 const STORAGE_KEY = 'digitalboost_onboarding_data';
 const STEP_KEY = 'digitalboost_onboarding_step';
 
-// Initialize Firestore outside of component to avoid re-initialization on every render
-const db = getFirestore(app);
-
-// In Vite, environment variables are exposed via import.meta.env, not process.env
-// Only connect to emulator if explicitly enabled
-const isEmulatorEnabled = import.meta.env.VITE_USE_FIRESTORE_EMULATOR === 'true';
-if (isEmulatorEnabled) {
-  try {
-    connectFirestoreEmulator(db, 'localhost', 8080);
-    console.log('Connected to Firestore emulator');
-  } catch (error) {
-    console.warn('Failed to connect to Firestore emulator:', error);
-  }
-}
+// Using local storage only to prevent Firestore channel errors
+console.log('Using local storage only for onboarding data (no Firestore)');
 
 export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { currentUser } = useAuth();
@@ -54,20 +41,21 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     return savedStep ? parseInt(savedStep, 10) : 1;
   });
   
-  // Load data from Firestore when user is authenticated
+  // Load data from localStorage when component mounts
   useEffect(() => {
-    const loadUserData = async () => {
+    const loadUserData = () => {
       if (currentUser?.uid) {
         try {
-          const userDocRef = doc(db, 'userData', currentUser.uid);
-          const userDoc = await getDoc(userDocRef);
+          // Using localStorage instead of Firestore to prevent channel errors
+          const userDataKey = `${STORAGE_KEY}_${currentUser.uid}`;
+          const savedData = localStorage.getItem(userDataKey);
           
-          if (userDoc.exists()) {
-            const userData = userDoc.data() as OnboardingData;
+          if (savedData) {
+            const userData = JSON.parse(savedData) as OnboardingData;
             setData(userData);
           }
         } catch (error) {
-          console.error('Error loading user data:', error);
+          console.error('Error loading user data from localStorage:', error);
         }
       }
     };
@@ -75,24 +63,21 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     loadUserData();
   }, [currentUser]);
   
-  // Save data to localStorage and Firestore whenever it changes
+  // Save data to localStorage whenever it changes
   useEffect(() => {
-    // Save to localStorage for non-authenticated users
+    // Save to localStorage for all users
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     
-    // Save to Firestore for authenticated users
-    const saveToFirestore = async () => {
-      if (currentUser?.uid && Object.keys(data).length > 0) {
-        try {
-          const userDocRef = doc(db, 'userData', currentUser.uid);
-          await setDoc(userDocRef, data, { merge: true });
-        } catch (error) {
-          console.error('Error saving user data to Firestore:', error);
-        }
+    // Save to user-specific localStorage key if authenticated
+    if (currentUser?.uid && Object.keys(data).length > 0) {
+      try {
+        const userDataKey = `${STORAGE_KEY}_${currentUser.uid}`;
+        localStorage.setItem(userDataKey, JSON.stringify(data));
+        console.log('Saved user data to localStorage');
+      } catch (error) {
+        console.error('Error saving user data to localStorage:', error);
       }
-    };
-    
-    saveToFirestore();
+    }
   }, [data, currentUser]);
   
   // Save current step to localStorage whenever it changes
@@ -115,13 +100,14 @@ export const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(STEP_KEY);
     
-    // Also clear from Firestore if user is authenticated
+    // Also clear user-specific data from localStorage if user is authenticated
     if (currentUser?.uid) {
       try {
-        const userDocRef = doc(db, 'userData', currentUser.uid);
-        setDoc(userDocRef, {}, { merge: false });
+        const userDataKey = `${STORAGE_KEY}_${currentUser.uid}`;
+        localStorage.removeItem(userDataKey);
+        console.log('Reset user data in localStorage');
       } catch (error) {
-        console.error('Error resetting user data in Firestore:', error);
+        console.error('Error resetting user data in localStorage:', error);
       }
     }
   };

@@ -35,7 +35,6 @@ const StepProgressBar: React.FC<StepProgressBarProps> = ({
       {/* Step text indicator */}
       <div className="flex justify-between mb-2">
         <span className="text-sm font-medium">Step {currentStep} of {totalSteps}</span>
-        <span className="text-sm text-gray-500">{Math.round((currentStep / totalSteps) * 100)}% Complete</span>
       </div>
       
       {/* Progress bar */}
