@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './api/client';
 import Home from "./pages/Home";
+import ServiceDetail from "./pages/ServiceDetail";
 // Import onboarding components
 import Onboarding from "./pages/Onboarding";
 import OnboardingIndex from "./pages/onboarding/index";
@@ -81,6 +82,13 @@ function App() {
                 <Route path="/" element={
                   <ErrorBoundary onError={logError}>
                     <Home />
+                  </ErrorBoundary>
+                } />
+                
+                {/* Service detail page */}
+                <Route path="/service/:slug" element={
+                  <ErrorBoundary onError={logError}>
+                    <ServiceDetail />
                   </ErrorBoundary>
                 } />
                 

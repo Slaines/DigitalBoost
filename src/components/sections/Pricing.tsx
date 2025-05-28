@@ -25,8 +25,8 @@ const Pricing: React.FC = () => {
               }`}
             >
               {plan.popular && (
-                <div className="absolute top-0 right-0">
-                  <div className="bg-blue-500 text-white py-1 px-4 text-sm font-semibold transform rotate-45 translate-x-[30%] translate-y-[50%]">
+                <div className="absolute top-0 right-0 overflow-hidden w-[100px] h-[100px]">
+                  <div className="bg-blue-500 text-white py-1 px-4 text-sm font-bold absolute top-[22px] right-[-30px] rotate-45 shadow-md w-[140px] text-center">
                     Popular
                   </div>
                 </div>

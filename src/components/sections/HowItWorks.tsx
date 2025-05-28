@@ -13,7 +13,7 @@ const iconMap: Record<string, React.ReactNode> = {
 
 const HowItWorks: React.FC = () => {
   return (
-    <section id="how-it-works" className="py-20 bg-white">
+    <section id="how-it-works" className="py-20 pb-36 bg-white">
       <Container>
         <SectionHeading
           title="How It Works"
@@ -25,18 +25,18 @@ const HowItWorks: React.FC = () => {
           {/* Connection line */}
           <div className="hidden md:block absolute top-24 left-[calc(50%-1px)] h-[calc(100%-120px)] w-0.5 bg-gray-200"></div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8">
             {steps.map((step, index) => (
               <div 
                 key={step.id}
                 className={`relative ${
                   index % 2 === 0 
-                    ? "md:text-right" 
-                    : "md:text-left md:translate-y-24"
+                    ? "md:text-right md:pr-6" 
+                    : "md:text-left md:pl-6 md:translate-y-24"
                 }`}
               >
                 <div 
-                  className={`inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-600 text-white shadow-md mb-4 relative z-10 ${
+                  className={`inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-600 text-white shadow-md mb-4 relative z-10 mx-auto md:mx-0 ${
                     index % 2 === 0 ? "md:ml-auto" : ""
                   }`}
                 >
@@ -45,7 +45,7 @@ const HowItWorks: React.FC = () => {
                 <h3 className="text-xl font-bold text-gray-900 mb-2">
                   {step.title}
                 </h3>
-                <p className="text-gray-600 max-w-sm">
+                <p className={`text-gray-600 max-w-xs ${index % 2 === 0 ? "ml-auto" : ""}`}>
                   {step.description}
                 </p>
               </div>

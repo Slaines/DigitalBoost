@@ -7,6 +7,7 @@ import {
   Share2, 
   BarChart
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import Container from "../ui/Container";
 import SectionHeading from "../ui/SectionHeading";
 import { services } from "../../data";
@@ -45,8 +46,8 @@ const Services: React.FC = () => {
               <p className="text-gray-600">
                 {service.description}
               </p>
-              <a 
-                href="#" 
+              <Link 
+                to={`/service/${service.title.toLowerCase().replace(/\s+/g, '-')}`}
                 className="inline-flex items-center mt-4 text-blue-600 hover:text-blue-700 font-medium"
               >
                 Learn more
@@ -61,7 +62,7 @@ const Services: React.FC = () => {
                     clipRule="evenodd" 
                   />
                 </svg>
-              </a>
+              </Link>
             </div>
           ))}
         </div>
