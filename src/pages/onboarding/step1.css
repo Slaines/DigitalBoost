@@ -1,0 +1,101 @@
+/* Scrollbar hiding styles */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+/* Modern category tab styles */
+.category-tab {
+  position: relative;
+  padding: 0.75rem 1.25rem;
+  margin: 0 0.25rem;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  border-radius: 0.5rem 0.5rem 0 0;
+  overflow: hidden;
+}
+
+.category-tab::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #6366f1, #818cf8);
+  transition: width 0.3s ease;
+}
+
+.category-tab:hover::before {
+  width: 40%;
+}
+
+.category-tab-active {
+  color: #4f46e5;
+  background-color: rgba(99, 102, 241, 0.08);
+}
+
+.category-tab-active::before {
+  width: 100%;
+}
+
+/* Selection indicator pulse animation */
+.selection-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  margin-left: 8px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+/* Service grid container */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  padding: 1rem 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Service count indicator */
+.service-count {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  margin-top: 1.5rem;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.service-count-active {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.1);
+}

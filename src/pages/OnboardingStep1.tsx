@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRightIcon } from 'lucide-react';
+import { ChevronRightIcon, ArrowRightIcon } from 'lucide-react';
 import { useOnboarding } from '../context/OnboardingContext';
 import OnboardingLayout from '../components/layout/OnboardingLayout';
 import OnboardingIllustration from '../components/illustrations/OnboardingIllustration';
@@ -102,7 +102,6 @@ const OnboardingStep1: React.FC = () => {
       onNext={handleNext}
       nextDisabled={!selectedService}
       nextLabel="Continue"
-      illustration={<OnboardingIllustration variant="services" />}
     >
       <div className="space-y-6">
         {serviceCategories.map((category, categoryIndex) => (

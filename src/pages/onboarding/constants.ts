@@ -24,10 +24,11 @@ export type OnboardingStep = {
 
 export interface OnboardingData {
   // Step 1: Service Selection
-  services?: string[]; // Changed from single service to array of services
+  services?: string[]; // Array of selected service IDs
   
-  // Step 2: Skills Selection
-  skills?: string[];
+  // Step 2: Service Goals & Timeline
+  serviceGoals?: Array<{ service: string; goal: string }>; // Array of service-goal pairs
+  timeline?: string; // Selected timeline option
   
   // Step 3: Location
   location?: string;
@@ -172,8 +173,8 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
   },
   {
     id: 2,
-    key: 'skills',
-    title: 'Select Skills',
+    key: 'serviceGoals',
+    title: 'Service Goals & Timeline',
     path: '/onboarding/Step2',
     required: ['services'],
     nextStep: 3,
@@ -184,7 +185,7 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     key: 'location',
     title: 'Your Location',
     path: '/onboarding/Step3',
-    required: ['services', 'skills'],
+    required: ['services', 'serviceGoals', 'timeline'],
     nextStep: 4,
     prevStep: 2,
   },
@@ -193,7 +194,7 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     key: 'companyName',
     title: 'Company Name',
     path: '/onboarding/Step4',
-    required: ['services', 'skills', 'location'],
+    required: ['services', 'serviceGoals', 'timeline', 'location'],
     nextStep: 5,
     prevStep: 3,
   },
@@ -202,7 +203,7 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     key: 'companySize',
     title: 'Company Size',
     path: '/onboarding/Step5',
-    required: ['services', 'skills', 'location', 'companyName'],
+    required: ['services', 'serviceGoals', 'timeline', 'location', 'companyName'],
     nextStep: 6,
     prevStep: 4,
   },
@@ -211,7 +212,7 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     key: 'industry',
     title: 'Industry',
     path: '/onboarding/Step6',
-    required: ['services', 'skills', 'location', 'companyName', 'companySize'],
+    required: ['services', 'serviceGoals', 'timeline', 'location', 'companyName', 'companySize'],
     nextStep: 7,
     prevStep: 5,
   },
@@ -220,7 +221,7 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     key: 'budget',
     title: 'Budget',
     path: '/onboarding/Step7',
-    required: ['services', 'skills', 'location', 'companyName', 'companySize', 'industry'],
+    required: ['services', 'serviceGoals', 'timeline', 'location', 'companyName', 'companySize', 'industry'],
     nextStep: 8,
     prevStep: 6,
   },
@@ -229,7 +230,7 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     key: 'projectContext',
     title: 'Project Context',
     path: '/onboarding/Step8',
-    required: ['services', 'skills', 'location', 'companyName', 'companySize', 'industry', 'budget'],
+    required: ['services', 'serviceGoals', 'timeline', 'location', 'companyName', 'companySize', 'industry', 'budget'],
     nextStep: 9,
     prevStep: 7,
   },
@@ -238,7 +239,7 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     key: 'review',
     title: 'Review Information',
     path: '/onboarding/review',
-    required: ['services', 'skills', 'location', 'companyName', 'companySize', 'industry', 'budget', 'projectContext'],
+    required: ['services', 'serviceGoals', 'timeline', 'location', 'companyName', 'companySize', 'industry', 'budget', 'projectContext'],
     nextStep: 10,
     prevStep: 8,
   },
@@ -247,7 +248,7 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     key: 'account',
     title: 'Create Account',
     path: '/onboarding/account-creation',
-    required: ['services', 'skills', 'location', 'companyName', 'companySize', 'industry', 'budget', 'projectContext'],
+    required: ['services', 'serviceGoals', 'timeline', 'location', 'companyName', 'companySize', 'industry', 'budget', 'projectContext'],
     nextStep: 11,
     prevStep: 9,
   }

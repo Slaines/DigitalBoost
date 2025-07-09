@@ -25,7 +25,7 @@ const OnboardingButton: React.FC<OnboardingButtonProps> = ({
   disabled = false,
   type = 'button',
 }) => {
-  const baseClasses = 'rounded-md font-medium transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-1 focus:ring-offset-1 transform hover:scale-[1.01] active:scale-[0.99]';
+  const baseClasses = 'rounded-md font-medium transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:scale-[1.01] active:scale-[0.99]';
   
   const variantClasses = {
     primary: 'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500 shadow-md hover:shadow-lg',
@@ -36,12 +36,12 @@ const OnboardingButton: React.FC<OnboardingButtonProps> = ({
   
   const sizeClasses = {
     sm: 'px-2 py-1 text-xs',
-    md: 'px-3 py-1.5 text-sm',
-    lg: 'px-4 py-2 text-base',
+    md: 'px-4 py-2 text-sm',
+    lg: 'px-6 py-3 text-base font-semibold',
   };
   
   const widthClass = isFullWidth ? 'w-full' : '';
-  const disabledClasses = disabled ? 'opacity-60 cursor-not-allowed pointer-events-none' : '';
+  const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '';
   
   return (
     <button

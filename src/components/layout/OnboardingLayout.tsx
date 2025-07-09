@@ -1,10 +1,11 @@
 import React, { ReactNode, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { XIcon, ChevronRightIcon, ChevronLeftIcon, RotateCcwIcon } from 'lucide-react';
+import { XIcon, ChevronRightIcon, ChevronLeftIcon, RotateCcwIcon, ArrowRightIcon, InfoIcon } from 'lucide-react';
 import { useOnboarding } from '../../context/OnboardingContext';
 import StepProgressBar from '../ui/StepProgressBar';
 import OnboardingButton from '../ui/OnboardingButton';
 import AnimatedTransition from '../ui/AnimatedTransition';
+import Tooltip from '../ui/Tooltip';
 
 interface OnboardingLayoutProps {
   children: ReactNode;
@@ -38,9 +39,14 @@ const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
   // Handle reset request
   const handleReset = () => {
     if (showResetConfirm) {
+      // First reset the data in context
       resetData();
-      navigate('/onboarding/Step1');
+      // Then clear the confirmation state
       setShowResetConfirm(false);
+      // Finally navigate to Step1 with a slight delay to ensure context is updated
+      setTimeout(() => {
+        navigate('/onboarding/Step1', { replace: true });
+      }, 100);
     } else {
       setShowResetConfirm(true);
       // Auto-hide after 3 seconds
@@ -118,16 +124,17 @@ const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
           </AnimatedTransition>
         </div>
 
-        {/* Navigation buttons - fixed at bottom */}
-        <div className="border-t border-gray-100 p-3 sm:p-4 flex justify-between items-center bg-white">
+        {/* Sticky Navigation Footer - fixed at bottom of viewport */}
+        <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 py-4 px-6 flex justify-between items-center bg-white shadow-lg z-10">
           <AnimatedTransition isVisible={true} direction="up" delay={50}>
             {onBack ? (
               <OnboardingButton 
                 variant="secondary" 
                 onClick={onBack}
-                size="sm"
-                icon={<ChevronLeftIcon size={16} />}
+                size="md"
+                icon={<ChevronLeftIcon size={18} />}
                 iconPosition="left"
+                className="min-w-[100px]"
               >
                 {backLabel}
               </OnboardingButton>
@@ -138,18 +145,30 @@ const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
 
           <AnimatedTransition isVisible={true} direction="up" delay={50}>
             {onNext && (
-              <OnboardingButton 
-                onClick={onNext}
-                disabled={nextDisabled}
-                size="sm"
-                icon={<ChevronRightIcon size={16} />}
-                iconPosition="right"
-              >
-                {nextLabel}
-              </OnboardingButton>
+              <div className="relative">
+                <Tooltip 
+                  content="Please select a service to continue" 
+                  position="top"
+                  visible={nextDisabled}
+                >
+                  <OnboardingButton 
+                    onClick={onNext}
+                    disabled={nextDisabled}
+                    size="lg"
+                    icon={<ArrowRightIcon size={18} />}
+                    iconPosition="right"
+                    className={`min-w-[140px] ${!nextDisabled ? 'bg-indigo-600 hover:bg-indigo-700' : ''}`}
+                  >
+                    {nextLabel}
+                  </OnboardingButton>
+                </Tooltip>
+              </div>
             )}
           </AnimatedTransition>
         </div>
+        
+        {/* Add padding at the bottom to prevent content from being hidden behind the sticky footer */}
+        <div className="h-20"></div>
       </div>
     </div>
   );

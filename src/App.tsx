@@ -6,6 +6,9 @@ import Home from "./pages/Home";
 import ServiceDetail from "./pages/ServiceDetail";
 // Import onboarding components
 import Onboarding from "./pages/Onboarding";
+import OnboardingDemo from './pages/OnboardingDemo';
+import EnhancedStep1 from './pages/onboarding/EnhancedStep1';
+import ServiceSelectionDemo from './pages/ServiceSelectionDemo';
 import OnboardingIndex from "./pages/onboarding/index";
 import Step1 from "./pages/onboarding/Step1";
 import Step2 from "./pages/onboarding/Step2";
@@ -137,6 +140,21 @@ function App() {
                 <Route path="/onboarding/Step8" element={
                   <ErrorBoundary onError={logError}>
                     <Step8 />
+                  </ErrorBoundary>
+                } />
+                <Route path="/onboarding/demo" element={
+                  <ErrorBoundary onError={logError}>
+                    <OnboardingDemo />
+                  </ErrorBoundary>
+                } />
+                <Route path="/onboarding/enhanced-services" element={
+                  <ErrorBoundary onError={logError}>
+                    <EnhancedStep1 />
+                  </ErrorBoundary>
+                } />
+                <Route path="/service-selection-demo" element={
+                  <ErrorBoundary onError={logError}>
+                    <ServiceSelectionDemo />
                   </ErrorBoundary>
                 } />
                 {/* Keep the old routes for backward compatibility */}

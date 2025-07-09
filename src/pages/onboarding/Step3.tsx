@@ -14,13 +14,20 @@ const OnboardingStep3: React.FC = () => {
   
   // Validate that we have the necessary data in context
   useEffect(() => {
+    console.log("Step3 validating context data:", data);
+    
     if (!data.services || data.services.length === 0) {
       // If missing required data in context, redirect back to appropriate step
+      console.log("No services found in context, redirecting to Step1");
       setCurrentStep(1);
-      navigate("/onboarding/Step1");
-    } else if (!data.skills || data.skills.length === 0) {
+      navigate("/onboarding/step1");
+    } else if (!data.serviceGoals || data.serviceGoals.length === 0) {
+      // Check for serviceGoals (from Step2Accordion) instead of skills
+      console.log("No serviceGoals found in context, redirecting to Step2");
       setCurrentStep(2);
-      navigate("/onboarding/Step2");
+      navigate("/onboarding/step2");
+    } else {
+      console.log("Step3 validation passed, staying on Step3");
     }
   }, [data, navigate, setCurrentStep]);
   
@@ -48,14 +55,7 @@ const OnboardingStep3: React.FC = () => {
     setError('');
   };
 
-  // Helper function to get service name from ID
-  const getServiceName = (serviceId: string): string => {
-    for (const category of serviceCategories) {
-      const option = category.options.find(opt => opt.id === serviceId);
-      if (option) return option.name;
-    }
-    return serviceId; // Fallback to ID if name not found
-  };
+  // Removed unused getServiceName function
 
   return (
     <OnboardingLayout
